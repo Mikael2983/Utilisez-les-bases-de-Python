@@ -1,3 +1,4 @@
+import re
 import requests
 import csv
 from bs4 import BeautifulSoup
@@ -22,6 +23,16 @@ for row in rows:
     key = row.find('th').string  # Extraire le texte de l'élément <th>
     value = row.find('td').string  # Extraire le texte de l'élément <td>
     data[key] = value #création du dictionnaire
+
+#extraction du nombre d'exemplaire disponible
+
+nombre_dispo = re.search(r'\d+', data["Availability"])    # rechercher un ou plusieurs chiffres (\d+) dans la chaîne de caractère
+
+if nombre_dispo:            # Stocker le résultat si un nombre est trouvé
+    data["Availability"] = nombre_dispo.group()
+
+
+
 
 #extraire la description
 descriptions = soup.find_all("p", class_="")    # liste des <p> sans class ( 1 seul sur la page du livre)
