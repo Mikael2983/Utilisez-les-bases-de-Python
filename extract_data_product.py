@@ -3,7 +3,7 @@ import requests
 import csv
 from bs4 import BeautifulSoup
 
-csv_path = "C:/Users/mikae/Documents/formation/Project2/sample.csv"
+csv_path = "C:/Users/mikae/Documents/formation/Project2/data_one_product.csv"
 url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 page = requests.get(url)
 soup = BeautifulSoup(page.content, "html.parser")
