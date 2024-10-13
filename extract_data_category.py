@@ -33,7 +33,6 @@ while True :
     else:
         break
 
-
 for url in url_livres :
     url_livre = "https://books.toscrape.com/catalogue/"+ url.replace("../", "")
     page = requests.get(url_livre)
@@ -86,12 +85,7 @@ for url in url_livres :
 
     data["image_url"] = img_url  # ajout de l'url de l'image au distionnaire.
 
-
     # Stockage des informations dans le CSV
-    print([data["url product"], data["UPC"], data["title"], data["Price (incl. tax)"], data["Price (excl. tax)"],
-         data["Availability"], data["product_description"], data["product_category"], data["rating_value"],
-         data["image_url"]])
-
     writer.writerow([data["url product"], data["UPC"], data["title"], data["Price (incl. tax)"], data["Price (excl. tax)"],
          data["Availability"], data["product_description"], data["product_category"], data["rating_value"],
          data["image_url"]])
