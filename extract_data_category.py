@@ -2,13 +2,14 @@ import re
 import requests
 import csv
 from bs4 import BeautifulSoup
+from pathlib import Path
 
-csv_path = "C:/Users/mikae/Documents/formation/Project2/data_one_category.csv"
+csv_path = Path("data/data_one_category.csv").resolve()
 url_base = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/"
 url_page = "index.html"
 url_site = "http://books.toscrape.com/"
 url_livres = []
-data_book = open("data_one_product.csv",'w',encoding='utf-8')
+data_book = open(csv_path,'w',encoding='utf-8')
 #le <head> de la page indique charset=utf-8 pour éviter un problème d'encodage du csv (le caracère #) j'ai dû repréciser
 #initialisation du fichier CVS avec le header
 writer = csv.writer(data_book, delimiter=",")
@@ -22,6 +23,7 @@ while True :
 
     # extraire la liste des Urls des livres de la catégorie
     liste_livres = soup.find_all("div", class_="image_container")
+
     for product in liste_livres:
         liste_a = product.find("a")  # extraction des balises a
         url_livre = liste_a.get('href')  # extraction de l'url du livre
