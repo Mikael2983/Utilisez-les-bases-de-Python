@@ -21,7 +21,9 @@ del categories_url["Books"]  # cette catégorie n'en est pas réellement une car
 
 #extraire tous les livres de chaque catégorie
 for category in categories_url:
-    # création des dossiers de stockage des éléments récupérer
+    # pour suivre l'avancement lors de l'exécution du programme
+    print("la catégorie " + category + " est en cours de traitement")
+    # création des dossiers de stockage des éléments récupérés
     dossier = Path("data/"+category+"/images").resolve()
     dossier.mkdir(parents=True, exist_ok=True)
     url_livres = []     #initialisation de la liste qui contiendra les url de tous les livres de la catégorie
@@ -30,7 +32,6 @@ for category in categories_url:
     url_page = "index.html"                 #seconde partie de l'url pour la premiere page de la catégorie.
     while True:                             # boucle tant qu'il trouve une page suivante.
         url = url_base + url_page           #reconstitution de URL en fonction de la page suiavnte trouvée.
-        print(url)
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         # extraire la liste des Urls des livres de la catégorie
