@@ -8,7 +8,7 @@ Ce projet est une version bêta et n'automatise pas encore la surveillance en te
 ## Fonctionnalités
 - Extraction des titres de livres et de leurs prix sur **Books to Scrape**.
 - Export des données extraites dans un fichier CSV.
-- Le code est facilement extensible à d'autres librairies en ligne à l'avenir.
+- Téléchargement et enregistrement des covers.
 
 ## Prérequis
 - Python 3.x
