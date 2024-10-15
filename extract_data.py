@@ -1,6 +1,8 @@
 import re
 import requests
 import csv
+from PIL import Image
+from io import BytesIO
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -19,20 +21,16 @@ del categories_url["Books"]  # cette catégorie n'en est pas réellement une car
 
 #extraire tous les livres de chaque catégorie
 for category in categories_url:
+    # création des dossiers de stockage des éléments récupérer
+    dossier = Path("data/"+category+"/images").resolve()
+    dossier.mkdir(parents=True, exist_ok=True)
     url_livres = []     #initialisation de la liste qui contiendra les url de tous les livres de la catégorie
-    # initialisation du fichier CVS avec le header
-    csv_path = Path("data/livres_de_la_categorie_" + category + ".csv").resolve()  # création du chemin et nom du fichier CVS incluant le nom de la catégorie
-    data_book = open(csv_path, 'w', encoding='utf-8') # création et ouverture du CSV
-    # le <head> de la page web indique charset=utf-8 pour éviter un problème d'encodage du csv (le caracère # en particulier) j'ai dû repréciser
-    writer = csv.writer(data_book, delimiter=",")
-    writer.writerow(  # mise en place du header selon les exigences du projet
-        ["product_page_url", "universal_ product_code", "title", "price_including_tax", "price_excluding_tax",
-         "number_available", "product_description", "category", "review_rating", "image_url"])
 
     url_base = categories_url[category]     #attribution de la premiere partie de l'URL qui contient le nom de la catégorie.
     url_page = "index.html"                 #seconde partie de l'url pour la premiere page de la catégorie.
     while True:                             # boucle tant qu'il trouve une page suivante.
         url = url_base + url_page           #reconstitution de URL en fonction de la page suiavnte trouvée.
+        print(url)
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         # extraire la liste des Urls des livres de la catégorie
@@ -48,12 +46,13 @@ for category in categories_url:
         else:
             break
     # extraire les données pour chaque livre à partir de la liste précédement établie
+    book_info=[] #liste qui va contenir les différents dictionnaire des livres d'une catégorie en attendant de l'ecrire dans le cvs. le but est d'éviter l'ouverture et la fermeture du fichier pour chaque itération
     for url in url_livres:
         url_livre = "https://books.toscrape.com/catalogue/" + url.replace("../", "")
         page = requests.get(url_livre)
         soup = BeautifulSoup(page.content, "html.parser")
 
-        # Dictionnaire pour stocker les données extraites
+        # Dictionnaire pour stocker les données de chaque livre extraites
         data = {}
         data["url product"] = url_livre
 
@@ -103,11 +102,27 @@ for category in categories_url:
             img_url = site_url + img_url.replace("../", "")
 
         data["image_url"] = img_url  # ajout de l'url de l'image au distionnaire.
+        #extraction de l'image
+        image_file=requests.get(img_url)
+        image= Image.open(BytesIO(image_file.content))
+        image_nom = "data/"+ category +"/images/"+re.sub(r'[\\/*?:"<>|]', ' ', data["title"])+"-"+data["UPC"]+".jpg"
+        image.save(image_nom)
 
-        # Stockage des informations dans le CSV
-        writer.writerow(
+        book_info.append(
             [data["url product"], data["UPC"], data["title"], data["Price (incl. tax)"], data["Price (excl. tax)"],
              data["Availability"], data["product_description"], data["product_category"], data["rating_value"],
              data["image_url"]])
 
-    data_book.close() # fermeture du fichier CSV
+
+    # Stockage des informations dans le CSV
+    # initialisation du fichier CVS avec le header
+    csv_path = Path("data/"+category+"/livres_de_la_categorie_" + category + ".csv").resolve()  # création du chemin et nom du fichier CVS incluant le nom de la catégorie
+    with open(csv_path, 'w', encoding='utf-8') as data_book: # création et ouverture du CSV
+    # le <head> de la page web indique charset=utf-8 pour éviter un problème d'encodage du csv (le caracère # en particulier) j'ai dû repréciser
+        writer = csv.writer(data_book, delimiter=",")
+        writer.writerow( # mise en place du header selon les exigences du projet
+        ["product_page_url", "universal_ product_code", "title", "price_including_tax", "price_excluding_tax",
+         "number_available", "product_description", "category", "review_rating", "image_url"])
+    #écriture des informations de book_info dans le CSV
+        for row in book_info:
+            writer.writerow(row)
