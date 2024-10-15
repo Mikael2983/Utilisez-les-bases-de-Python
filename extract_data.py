@@ -31,7 +31,7 @@ for category in categories_url:
     url_base = categories_url[category]     #attribution de la premiere partie de l'URL qui contient le nom de la catégorie.
     url_page = "index.html"                 #seconde partie de l'url pour la premiere page de la catégorie.
     while True:                             # boucle tant qu'il trouve une page suivante.
-        url = url_base + url_page           #reconstitution de URL en fonction de la page suiavnte trouvée.
+        url = url_base + url_page           #reconstitution de URL en fonction de la page suivante trouvée.
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         # extraire la liste des Urls des livres de la catégorie
