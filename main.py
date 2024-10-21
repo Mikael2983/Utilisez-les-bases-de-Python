@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import utils
 
 
-if __name__ == __main__:
+if __name__ == "__main__":
 
     url_site = "https://books.toscrape.com/"
 
