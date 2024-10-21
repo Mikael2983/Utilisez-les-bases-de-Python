@@ -21,7 +21,7 @@ Ce projet est une version bêta et n'automatise pas encore la surveillance en te
   
 2. Accédez au dossier du projet :
    ```bash
-   cd users/Documents/
+   cd Utilisez-les-bases-de-Python
 
 3. Créez et activez un environnement virtuel (facultatif mais recommandé) :
    ```bash
