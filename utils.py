@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 def scrape_book_data(book_url):
     # Dictionnaire pour stocker les données extraites
     data = {}
+
     data["url product"] = "https://books.toscrape.com/catalogue/" + book_url.replace("../", "")
 
     page = requests.get(data["url product"])
@@ -19,7 +20,7 @@ def scrape_book_data(book_url):
     product_title = soup.find_all("div", class_="col-sm-6 product_main")  # liste d'un seul élément des <div> avec la class col-sm-6 product_main
     data["title"] = product_title[0].h1.string  # extraction de la chaine de caractère constituant le titre
 
-    # extraire les valeurs ( UPC, price_includingTax, price_excludingTax)  de la table
+    # extraire les valeurs ( UPC, price_includingTax, price_excludingTax, review_rating, Availability)  de la table
     rows = soup.find_all('tr')
     # Boucle pour extraire les paires clé-valeur (th et td)
     for row in rows:
@@ -27,12 +28,6 @@ def scrape_book_data(book_url):
         value = row.find('td').string  # Extraire le texte de l'élément <td>
         data[key] = value  # création du dictionnaire
 
-    # extraction du nombre d'exemplaire disponible
-
-    available_quantity = re.search(r'\d+', data["Availability"])  # rechercher un ou plusieurs chiffres (\d+) dans la chaîne de caractère
-
-    if available_quantity:  # Stocker le résultat si un nombre est trouvé
-        data["Availability"] = available_quantity.group()
 
     # extraire la description
     descriptions = soup.find_all("p", class_="")  # liste des <p> sans class ( 1 seul sur la page du livre)
@@ -46,23 +41,11 @@ def scrape_book_data(book_url):
     categories = ul.find_all("li")[2]  # récupération du troisième élement de la liste correspondant à la catégorie
     data["product_category"] = categories.find("a").string  # extraction de la chaine de caractère constituant le nom de la catégorie et stockage
 
-    # extraire le review rating
-    rating = {
-        'Zero':0,
-        "One":1,
-        "Two":2,
-        "Three":3,
-        "Four":4,
-        "Five":5
-    }
+    # extraire le review_rating
     review_rating = soup.find('p', class_='star-rating')  # liste des <p> avec la class "star_rating"
-    data["rating_value"] = rating[
-        review_rating.get('class')[1]
-    ]
 
     # extraire l'url de l'image de la couverture
-    div_active_item = soup.find("div", class_="item active")  # liste d'un seul élément des <div> avec la class item active
-    img_tag = div_active_item.find('img')  # extraction de la balise <img>
+    img_tag = soup.find('img')  # extraction de la balise <img>
     img_url = img_tag['src']  # extraction de l'url de la source de l'image
 
     # Si l'URL de l'image est relative, il faut la compléter par l'URL du site
@@ -71,6 +54,26 @@ def scrape_book_data(book_url):
         img_url = url_site + img_url.replace("../", "")
 
     data["image_url"] = img_url  # ajout de l'url de l'image au distionnaire.
+
+    # transformer le review rating
+    rating = {
+        'Zero': 0,
+        "One": 1,
+        "Two": 2,
+        "Three": 3,
+        "Four": 4,
+        "Five": 5
+    }
+    data["rating_value"] = rating[
+        review_rating.get('class')[1]
+    ]
+    # transformer du nombre d'exemplaire disponible
+
+    available_quantity = re.search(r'\d+', data[
+        "Availability"])  # rechercher un ou plusieurs chiffres (\d+) dans la chaîne de caractère
+
+    if available_quantity:  # Stocker le résultat si un nombre est trouvé
+        data["Availability"] = available_quantity.group()
 
     return data
 
@@ -92,7 +95,7 @@ def scrape_category(category,url_category):
     else:
         page_number = "1"
 
-    for i in range(1, int(page_number)+1):
+    for i in range(0, int(page_number)):
         url = url_category + page_next  # reconstitution de URL en fonction de la page suivante trouvée.
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -103,7 +106,7 @@ def scrape_category(category,url_category):
             url_book = list_a.get('href')  # extraction de l'url du livre
             url_books.append(url_book)
 
-        page_next = "page-" + str(i+1) + ".html"  # affichage de la page suivante
+        page_next = "page-" + str(2+i) + ".html"  # affichage de la page suivante
 
     return url_books
 
