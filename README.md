@@ -32,7 +32,6 @@ Ce projet est une version bêta et n'automatise pas encore la surveillance en te
    ```bash
    pip install -r requirements.txt
 
-5. Utilisation
-  Exécutez le script principal pour récupérer les prix :
+5. Exécutez le script principal pour récupérer les prix :
    ```bash
    python main.py
