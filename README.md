@@ -17,11 +17,11 @@ Ce projet est une version bêta et n'automatise pas encore la surveillance en te
 ## Installation
 1. Clonez ce repository sur votre machine locale :
    ```bash
-   git clone https://github.com/Mikael2983/OpenclassroomsProject2.git
+   git clone https://github.com/Mikael2983/Utilisez-les-bases-de-Python.git
   
 2. Accédez au dossier du projet :
    ```bash
-   cd users/Documents/projet2
+   cd users/Documents/
 
 3. Créez et activez un environnement virtuel (facultatif mais recommandé) :
    ```bash
@@ -35,4 +35,4 @@ Ce projet est une version bêta et n'automatise pas encore la surveillance en te
 5. Utilisation
   Exécutez le script principal pour récupérer les prix :
    ```bash
-   python extract_data.py
+   python main.py
