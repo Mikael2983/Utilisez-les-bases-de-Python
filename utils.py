@@ -8,20 +8,18 @@ from bs4 import BeautifulSoup
 
 
 def scrape_book_data(book_url):
-    csv_path = Path("data/data_one_product.csv").resolve()
-    # url = "https://books.toscrape.com/catalogue/sharp-objects_997/index.html"
-
     # Dictionnaire pour stocker les données extraites
     data = {}
     data["url product"] = "https://books.toscrape.com/catalogue/" + book_url.replace("../", "")
 
     page = requests.get(data["url product"])
     soup = BeautifulSoup(page.content, "html.parser")
+
     # extraction du titre
     product_title = soup.find_all("div", class_="col-sm-6 product_main")  # liste d'un seul élément des <div> avec la class col-sm-6 product_main
     data["title"] = product_title[0].h1.string  # extraction de la chaine de caractère constituant le titre
 
-    # extraire les valeurs de la table
+    # extraire les valeurs ( UPC, price_includingTax, price_excludingTax)  de la table
     rows = soup.find_all('tr')
     # Boucle pour extraire les paires clé-valeur (th et td)
     for row in rows:
@@ -46,8 +44,7 @@ def scrape_book_data(book_url):
     # extraire la categorie
     ul = soup.find('ul', class_="breadcrumb")  # liste des élements de la liste de l'entête
     categories = ul.find_all("li")[2]  # récupération du troisième élement de la liste correspondant à la catégorie
-    data["product_category"] = categories.find(
-        "a").string  # extraction de la chaine de caractère constituant le nom de la catégorie et stockage
+    data["product_category"] = categories.find("a").string  # extraction de la chaine de caractère constituant le nom de la catégorie et stockage
 
     # extraire le review rating
     rating = {
@@ -61,23 +58,24 @@ def scrape_book_data(book_url):
     review_rating = soup.find('p', class_='star-rating')  # liste des <p> avec la class "star_rating"
     data["rating_value"] = rating[
         review_rating.get('class')[1]
-    ]  # Extraire le nombre d'étoile de la liste extraite de la classe de la balise <p>
+    ]
 
     # extraire l'url de l'image de la couverture
     div_active_item = soup.find("div", class_="item active")  # liste d'un seul élément des <div> avec la class item active
     img_tag = div_active_item.find('img')  # extraction de la balise <img>
     img_url = img_tag['src']  # extraction de l'url de la source de l'image
 
-    # Si l'URL de l'image est relative, il faut la compléter par l'URL de base
-    base_url = "http://books.toscrape.com/"
+    # Si l'URL de l'image est relative, il faut la compléter par l'URL du site
+    url_site = "http://books.toscrape.com/"
     if img_url.startswith("../"):
-        img_url = base_url + img_url.replace("../", "")
+        img_url = url_site + img_url.replace("../", "")
 
     data["image_url"] = img_url  # ajout de l'url de l'image au distionnaire.
 
     return data
 
 # scraper une catégorie
+
 def scrape_category(category,url_category):
     # pour suivre l'avancement lors de l'exécution du programme
     print("la catégorie " + category + " est en cours de traitement")
@@ -94,7 +92,7 @@ def scrape_category(category,url_category):
     else:
         page_number = "1"
 
-    for i in range(1, int(page_number)+1):  # boucle tant qu'il trouve une page suivante.
+    for i in range(1, int(page_number)+1):
         url = url_category + page_next  # reconstitution de URL en fonction de la page suivante trouvée.
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -114,7 +112,7 @@ def scrape_category(category,url_category):
 def scrape_all_categories(site_url):
     url_categories = {}
     page = requests.get(site_url)
-    soup=BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'html.parser')
     categories_div = soup.find('ul',
                                class_='nav-list')  # je devrai nommer la variable categories_ul mais trop proche de categories.url je garde celle-ci
     categories = categories_div.find_all('a')
