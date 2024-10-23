@@ -17,13 +17,13 @@ def scrape_book_data(book_url):
     product_title = soup.find_all("div", class_="col-sm-6 product_main")  # liste d'un seul élément des <div> avec la class col-sm-6 product_main
     data["title"] = product_title[0].h1.string  # extraction de la chaine de caractère constituant le titre
 
-    # extraire les valeurs ( UPC, price_includingTax, price_excludingTax, review_rating, Availability)  de la table
+    # extraire les valeurs ( UPC, price_includingTax, price_excludingTax, Availability)  de la table
     rows = soup.find_all('tr')
     # Boucle pour extraire les paires clé-valeur (th et td)
     for row in rows:
         key = row.find('th').string  # Extraire le texte de l'élément <th>
         value = row.find('td').string  # Extraire le texte de l'élément <td>
-        data[key] = value  # création du dictionnaire
+        data[key] = value  # stockage dans le dictionnaire
 
 
     # extraire la description
