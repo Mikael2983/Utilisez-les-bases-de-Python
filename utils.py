@@ -32,7 +32,7 @@ def scrape_book_data(book_url):
     if descriptions:
         data["product_description"] = descriptions[0].string  # extraction de la chaine de caractère constituant la description depuis la liste
     else:
-        data["product_description"] = "pas de description"
+        data["product_description"] = "no description"
 
     # extraire la categorie
     ul = soup.find('ul', class_="breadcrumb")  # liste des élements de la liste de l'entête
@@ -127,6 +127,6 @@ def scrape_all_categories(site_url):
 def save_cover_picture(data_book):
     picture_file = requests.get(data_book["image_url"])
     picture = Image.open(BytesIO(picture_file.content))
-    picture_name = "data/" + data_book["product_category"] + "/images/" + re.sub(r'[\\/*?:"<>|]', ' ', data_book["title"]) + "-" + data_book[
-        "UPC"] + ".jpg"
+    picture_name = ("data/" + data_book["product_category"] + "/images/" + re.sub(r'[\\/*?:"<>|]', ' ', data_book["title"]) + "-" +
+                    data_book["UPC"] + ".jpg")
     picture.save(picture_name)

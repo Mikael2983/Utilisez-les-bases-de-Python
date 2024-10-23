@@ -13,7 +13,7 @@ if __name__ == "__main__":
         url_books = utils.scrape_category(category,url_categories[category])
         data_book=[]
         # Initialisation du fichier CSV avec le header
-        csv_path = Path("data/" + category + "/livres_de_la_categorie_" + category + ".csv").resolve()
+        csv_path = Path("data/" + category + "/category book/" + category + ".csv").resolve()
 
         with open(csv_path, 'w', encoding='utf-8', newline='') as backup_file:
             writer = csv.writer(backup_file, delimiter=",")
