@@ -1,6 +1,7 @@
 import re
 from io import BytesIO
 from pathlib import Path
+import csv
 
 import requests
 from bs4 import BeautifulSoup
@@ -163,15 +164,13 @@ def scrape_all_categories(site_url):
 
     return url_categories
 
-
-
-def save_cover_picture(url_picture):
+def save_cover_picture(data_book):
     '''
     download and save the book cover image
     :param data_book:
     :return:
     '''
-    picture_file = requests.get(url_picture)
+    picture_file = requests.get(data_book["image_url"])
     picture = Image.open(BytesIO(picture_file.content))
     picture_name = (
         "data/"
@@ -193,7 +192,7 @@ def write_data_on_csv(url_books,category):
     :return: 
     '''
     # Initialisation du fichier CSV avec le header
-    csv_path = Path("data/" + category + "/category book/" + category + ".csv").resolve()
+    csv_path = Path("data/" + category + "/" + category + "category book.csv").resolve()
     with open(csv_path, 'w', encoding='utf-8', newline='') as backup_file:
         writer = csv.writer(backup_file, delimiter=",")
         writer.writerow(
@@ -202,11 +201,11 @@ def write_data_on_csv(url_books,category):
 
         #Inscription des données de chaque livre
         for url_book in url_books:
-            data_book = utils.scrape_book_data(url_book)
+            data_book = scrape_book_data(url_book)
             writer.writerow(
                 [data_book["url product"], data_book["UPC"], data_book["title"], data_book["Price (incl. tax)"],
                  data_book["Price (excl. tax)"], data_book["Availability"], data_book["product_description"],
                  data_book["product_category"], data_book["rating_value"], data_book["image_url"]])
 
             #sauvegarde de la couverture du livre en local
-            save_cover_picture(data_book["image_url"])
+            save_cover_picture(data_book)
