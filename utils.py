@@ -2,7 +2,8 @@ import re
 import requests
 from pathlib import Path
 from bs4 import BeautifulSoup
-
+from PIL import Image
+from io import BytesIO
 
 def scrape_book_data(book_url):
     # Dictionnaire pour stocker les données extraites
@@ -121,3 +122,11 @@ def scrape_all_categories(site_url):
     del url_categories["Books"]  # cette catégorie n'en est pas réellement une car regroupe tous les livres du site
 
     return url_categories
+
+#télécharger et enregistrer l'image de la couverture d'un livre
+def save_cover_picture(data_book):
+    picture_file = requests.get(data_book["image_url"])
+    picture = Image.open(BytesIO(picture_file.content))
+    picture_name = "data/" + data_book["product_category"] + "/images/" + re.sub(r'[\\/*?:"<>|]', ' ', data_book["title"]) + "-" + data_book[
+        "UPC"] + ".jpg"
+    picture.save(picture_name)

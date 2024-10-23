@@ -1,9 +1,5 @@
 import csv
-from PIL import Image
-from io import BytesIO
-import requests
 from pathlib import Path
-import re
 import utils
 
 
@@ -31,8 +27,4 @@ if __name__ == "__main__":
                     [data_book["url product"], data_book["UPC"], data_book["title"], data_book["Price (incl. tax)"],
                      data_book["Price (excl. tax)"], data_book["Availability"], data_book["product_description"],
                      data_book["product_category"], data_book["rating_value"],data_book["image_url"]])
-
-                image_file = requests.get(data_book["image_url"])
-                image= Image.open(BytesIO(image_file.content))
-                image_name = "data/"+ category +"/images/"+re.sub(r'[\\/*?:"<>|]', ' ', data_book["title"])+"-"+data_book["UPC"]+".jpg"
-                image.save(image_name)
+                utils.save_cover_picture(data_book)
