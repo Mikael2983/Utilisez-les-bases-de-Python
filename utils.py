@@ -94,7 +94,7 @@ def scrape_book_data(book_url):
 
 def scrape_category(category, url_category):
     '''
-    scrap one category
+    scrap data from one category
     :param category:
     :param url_category:
     :return url_books
