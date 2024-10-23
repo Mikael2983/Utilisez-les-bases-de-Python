@@ -1,8 +1,5 @@
 import re
 import requests
-import csv
-from PIL import Image
-from io import BytesIO
 from pathlib import Path
 from bs4 import BeautifulSoup
 
