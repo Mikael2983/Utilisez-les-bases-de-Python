@@ -151,14 +151,11 @@ def scrape_all_categories(site_url):
         "ul", class_="nav-list"
     )  # je devrai nommer la variable categories_ul mais trop proche de categories.url je garde celle-ci
     categories = categories_div.find_all("a")
-    for (
-            category
-    ) in (
-            categories
-    ):  # stockage des url dans un dictionnaire  "nom de la catéorie" = "url de la catégorie"
-        url_categories[category.getText().strip()] = site_url + category.get(
+    for category  in categories:  # stockage des url dans un dictionnaire  "nom de la catéorie" = "url de la catégorie"
+        url_categories[category.getText(strip=True)] = site_url + category.get(
             "href"
         ).replace("index.html", "")
+
     del url_categories[
         "Books"
     ]  # cette catégorie n'en est pas réellement une car regroupe tous les livres du site
