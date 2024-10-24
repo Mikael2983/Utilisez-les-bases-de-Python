@@ -12,7 +12,7 @@ def scrape_book_data(book_url):
     """
     Scrap one book data
     :param book_url:
-    :return:
+    :return data:
     """
 
     data = {"url product": "https://books.toscrape.com/catalogue/" + book_url.replace(
@@ -142,6 +142,7 @@ def scrape_all_categories(site_url):
     """
     scrape data from all categories
     :param site_url
+    :return url_categories
     """
     url_categories = {}
     page = requests.get(site_url)
