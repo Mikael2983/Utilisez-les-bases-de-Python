@@ -192,7 +192,7 @@ def write_data_on_csv(url_books,category):
     :return: 
     '''
     # Initialisation du fichier CSV avec le header
-    csv_path = Path("data/" + category + "/" + category + "category book.csv").resolve()
+    csv_path = Path("data/" + category + "/" + category + " category book.csv").resolve()
     with open(csv_path, 'w', encoding='utf-8', newline='') as backup_file:
         writer = csv.writer(backup_file, delimiter=",")
         writer.writerow(
